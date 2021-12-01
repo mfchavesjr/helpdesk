@@ -33,7 +33,7 @@ public class TecnicoService {
 		return tecnicoRepository.findAll();
 	}
 
-	public Tecnico create(TecnicoDto tecnicoDto) {
+	public Tecnico create(@Valid TecnicoDto tecnicoDto) {
 		tecnicoDto.setId(null);
 		validaPorCpfEEmail(tecnicoDto);
 		Tecnico tecnico = new Tecnico(tecnicoDto);
@@ -46,6 +46,16 @@ public class TecnicoService {
 		validaPorCpfEEmail(tecnicoDto);
 		tecnicoSaved = new Tecnico(tecnicoDto);
 		return tecnicoRepository.save(tecnicoSaved);
+
+	}
+
+	public void delete(Integer id) {
+		Tecnico tecnicoSaved = findById(id);
+		if (tecnicoSaved.getChamados().size() > 0) {
+			throw new DataIntegrityViolationException(
+					"O técnico possui ordens de serviços, " + "não pode ser deletado!");
+		}
+		tecnicoRepository.delete(tecnicoSaved);
 
 	}
 

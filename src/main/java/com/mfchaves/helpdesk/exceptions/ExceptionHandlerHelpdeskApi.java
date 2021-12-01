@@ -1,6 +1,7 @@
 package com.mfchaves.helpdesk.exceptions;
 
 import javax.servlet.http.HttpServletRequest;
+import javax.validation.ConstraintViolationException;
 
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -39,13 +40,25 @@ public class ExceptionHandlerHelpdeskApi {
 			HttpServletRequest request) {
 
 		ValidationError errors = new ValidationError(System.currentTimeMillis(), HttpStatus.BAD_REQUEST.value(),
-				"Erro na validação dos campos", "Verifique se algum campo obrigátoria está em branco", request.getRequestURI());
+				"Erro na validação dos campos", "Verifique se algum campo obrigátoria está em branco",
+				request.getRequestURI());
 
 		for (FieldError x : ex.getBindingResult().getFieldErrors()) {
 			errors.addErrors(x.getField(), x.getDefaultMessage());
 		}
 
 		return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(errors);
+
+	}
+
+	@ExceptionHandler(ConstraintViolationException.class)
+	public ResponseEntity<StandartError> constraintViolationException(ConstraintViolationException ex,
+			HttpServletRequest request) {
+		
+		StandartError error = new StandartError(System.currentTimeMillis(), HttpStatus.BAD_REQUEST.value(),
+				"CPF Inválido", ex.getMessage(), request.getRequestURI());
+
+		return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(error);
 
 	}
 
