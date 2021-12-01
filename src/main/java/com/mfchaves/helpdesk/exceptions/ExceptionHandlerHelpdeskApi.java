@@ -8,7 +8,7 @@ import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 
 @ControllerAdvice
-public class ExceptionHandlerObjectNotFoundException {
+public class ExceptionHandlerHelpdeskApi {
 
 	@ExceptionHandler(ObjectNotFoundException.class)
 	public ResponseEntity<StandartError> objectNotFoundException(ObjectNotFoundException ex,
@@ -18,6 +18,17 @@ public class ExceptionHandlerObjectNotFoundException {
 				"Object not found", ex.getMessage(), request.getRequestURI());
 
 		return ResponseEntity.status(HttpStatus.NOT_FOUND).body(error);
+
+	}
+
+	@ExceptionHandler(DataIntegrityViolationException.class)
+	public ResponseEntity<StandartError> dataIntegrityViolationException(DataIntegrityViolationException ex,
+			HttpServletRequest request) {
+
+		StandartError error = new StandartError(System.currentTimeMillis(), HttpStatus.BAD_REQUEST.value(),
+				"Data violation", ex.getMessage(), request.getRequestURI());
+
+		return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(error);
 
 	}
 
