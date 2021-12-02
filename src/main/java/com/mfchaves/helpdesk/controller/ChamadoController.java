@@ -1,5 +1,8 @@
 package com.mfchaves.helpdesk.controller;
 
+import java.util.List;
+import java.util.stream.Collectors;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -17,6 +20,14 @@ public class ChamadoController {
 
 	@Autowired
 	private ChamadoService chamadoService;
+
+	@GetMapping
+	public ResponseEntity<List<ChamadoDto>> listAll() {
+		List<Chamado> listChamados = chamadoService.listAll();
+		List<ChamadoDto> listChamadosDto = listChamados.stream().map(obj -> new ChamadoDto(obj))
+				.collect(Collectors.toList());
+		return ResponseEntity.ok().body(listChamadosDto);
+	}
 
 	@GetMapping(value = "/{id}")
 	public ResponseEntity<ChamadoDto> findById(@PathVariable Integer id) {
