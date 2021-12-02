@@ -36,8 +36,15 @@ public class ChamadoService {
 		return chamadoRepository.findAll();
 	}
 
-	public Chamado create(@Valid ChamadoDto chamadoDto) {		
+	public Chamado create(@Valid ChamadoDto chamadoDto) {
 		return chamadoRepository.save(newChamado(chamadoDto));
+	}
+
+	public Chamado update(Integer id, @Valid ChamadoDto chamadoDto) {
+		chamadoDto.setId(id);
+		Chamado chamadoSaved = findById(id);
+		chamadoSaved = newChamado(chamadoDto);
+		return chamadoRepository.save(chamadoSaved);
 	}
 
 	private Chamado newChamado(ChamadoDto chamadoDto) {
@@ -55,7 +62,7 @@ public class ChamadoService {
 		chamado.setStatus(Status.toEnum(chamadoDto.getStatus()));
 		chamado.setTitulo(chamadoDto.getTitulo());
 		chamado.setObservacoes(chamadoDto.getObservacoes());
-		
+
 		return chamado;
 
 	}
